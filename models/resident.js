@@ -42,6 +42,15 @@ const residentSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  dday: {
+    type: Date,
+    default: null,
+  },
+  alife: {
+    type: Boolean,
+    default: true,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model('resident', residentSchema);

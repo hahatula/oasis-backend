@@ -7,6 +7,8 @@ mongoose.connect(MONGO_URI);
 const { PORT = 3001 } = process.env;
 const app = express();
 
+app.use("/", require("./routes/index"));
+
 app.listen(PORT, () => {
   console.log('Link to the server');
 });

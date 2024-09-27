@@ -1,10 +1,10 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const BadRequestError = require("../utils/errors/BadRequestError");
-const UnauthorizedError = require("../utils/errors/UnauthorizedError");
-const NotFoundError = require("../utils/errors/NotFoundError");
-const ConflictError = require("../utils/errors/ConflictError");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const BadRequestError = require('../utils/errors/BadRequestError');
+const UnauthorizedError = require('../utils/errors/UnauthorizedError');
+const NotFoundError = require('../utils/errors/NotFoundError');
+const ConflictError = require('../utils/errors/ConflictError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -18,22 +18,25 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 // };
 
 module.exports.createUser = (req, res, next) => {
-  const { name, avatar, email, password, city, coordinates } = req.body;
+  const { name, email, password, avatar, bio } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({ name, avatar, email, password: hash, city, coordinates }))
+    .then((hash) => User.create({ name, email, password: hash, avatar, bio }))
     .then((user) =>
-      res
-        .status(201)
-        .send({ name: user.name, avatar: user.avatar, email: user.email, city: user.city, coordinates: user.coordinates })
+      res.status(201).send({
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        bio: user.bio,
+      })
     )
     .catch((err) => {
       console.error(err);
-      if (err.name === "MongoServerError" && err.code === 11000) {
-        return next(new ConflictError("The user already exists."));
+      if (err.name === 'MongoServerError' && err.code === 11000) {
+        return next(new ConflictError('The user already exists.'));
       }
-      if (err.name === "ValidationError") {
-        return next(new BadRequestError("Invalid data"));
+      if (err.name === 'ValidationError') {
+        return next(new BadRequestError('Invalid data'));
       }
       return next(err);
     });
@@ -46,20 +49,20 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         {
-          expiresIn: "7d",
+          expiresIn: '7d',
         }
       );
       return res.send({ token });
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "NotCorrectCredentials") {
-        return next(new UnauthorizedError("Wrong email or password"));
+      if (err.name === 'NotCorrectCredentials') {
+        return next(new UnauthorizedError('Wrong email or password'));
       }
-      if (err.name === "NoEmailOrPassword") {
-        return next(new BadRequestError("No email or password"));
+      if (err.name === 'NoEmailOrPassword') {
+        return next(new BadRequestError('No email or password'));
       }
       return next(err);
     });
@@ -70,13 +73,13 @@ module.exports.getCurrentUser = (req, res, next) => {
 
   User.findById(_id)
     .orFail(() => {
-      throw new NotFoundError("Requested resource not found");
+      throw new NotFoundError('Requested resource not found');
     })
     .then((user) => res.send(user))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        return next(new BadRequestError("Invalid data"));
+      if (err.name === 'CastError') {
+        return next(new 'Invalid data'());
       }
       return next(err);
     });
@@ -98,8 +101,8 @@ module.exports.updateProfile = (req, res, next) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        return next(new BadRequestError("Invalid data"));
+      if (err.name === 'ValidationError') {
+        return next(new BadRequestError('Invalid data'));
       }
       return next(err);
     });

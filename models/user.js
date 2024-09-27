@@ -9,16 +9,6 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     required: true,
   },
-  avatar: {
-    type: String,
-    required: true,
-    validate: {
-      validator(value) {
-        return validator.isURL(value);
-      },
-      message: 'You must enter a valid URL',
-    },
-  },
   email: {
     type: String,
     unique: true,
@@ -39,6 +29,15 @@ const userSchema = new mongoose.Schema({
         return validator.isStrongPassword(value);
       },
       message: 'Please enter stronger password',
+    },
+  },
+  avatar: {
+    type: String,
+    validate: {
+      validator(value) {
+        return validator.isURL(value) || value === '';
+      },
+      message: 'You must enter a valid URL',
     },
   },
   bio: {

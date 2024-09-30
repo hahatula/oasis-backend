@@ -86,11 +86,34 @@ module.exports.getCurrentUser = (req, res, next) => {
 };
 
 module.exports.updateProfile = (req, res, next) => {
-  const { name, avatar, city, coordinates } = req.body;
+  const { name, bio } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
-    { name, avatar, city, coordinates },
+    { name, bio },
+    {
+      new: true, // the then handler receives the updated entry as input
+      runValidators: true, // the data will be validated before the update
+    }
+  )
+    .then((user) => {
+      res.send({ user });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === 'ValidationError') {
+        return next(new BadRequestError('Invalid data'));
+      }
+      return next(err);
+    });
+};
+
+module.exports.updateAvatar = (req, res, next) => {
+  const { avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
     {
       new: true, // the then handler receives the updated entry as input
       runValidators: true, // the data will be validated before the update

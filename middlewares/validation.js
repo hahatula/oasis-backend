@@ -61,8 +61,12 @@ module.exports.validateResidentBody = celebrate({
       'string.min': 'The minimum length of the "species" field is 2',
       'string.empty': 'The "species" field must be filled in',
     }),
-    bio: Joi.string().max(2000).messages({
+    bio: Joi.string().max(2000).allow('').messages({
       'string.max': 'The maximum length of the "bio" field is 2000',
+    }),
+    bday: Joi.date().iso().allow(null).messages({
+      'date.base': 'The "bday" field must be a valid date',
+      'date.format': 'The "bday" field must follow the ISO format (YYYY-MM-DD)',
     }),
   }),
 });
@@ -117,7 +121,7 @@ module.exports.validateUserUpdate = celebrate({
       'string.max': 'The maximum length of the "name" field is 30',
       'string.empty': 'The "name" field must be filled in',
     }),
-    bio: Joi.string().max(2000).messages({
+    bio: Joi.string().max(2000).allow('').messages({
       'string.max': 'The maximum length of the "bio" field is 2000',
     }),
   }),

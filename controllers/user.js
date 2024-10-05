@@ -97,7 +97,7 @@ module.exports.updateProfile = (req, res, next) => {
     }
   )
     .then((user) => {
-      res.send({ user });
+      res.send(user);
     })
     .catch((err) => {
       console.error(err);
@@ -120,7 +120,7 @@ module.exports.updateAvatar = (req, res, next) => {
     }
   )
     .then((user) => {
-      res.send({ user });
+      res.send(user);
     })
     .catch((err) => {
       console.error(err);

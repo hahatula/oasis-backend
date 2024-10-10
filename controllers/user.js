@@ -8,14 +8,16 @@ const ConflictError = require('../utils/errors/ConflictError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-// module.exports.getUsers = (req, res) => {
-//   User.find({})
-//     .then((users) => res.send({ data: users }))
-//     .catch((err) => {
-//       console.error(err);
-//       return next(err);
-//     });
-// };
+module.exports.getHostInfo = (req, res, next) => {
+  const { id: hostId } = req.query;
+
+  User.findById(hostId)
+    .then((users) => res.send({ data: users }))
+    .catch((err) => {
+      console.error(err);
+      return next(err);
+    });
+};
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password, avatar, bio } = req.body;
@@ -72,6 +74,7 @@ module.exports.getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
 
   User.findById(_id)
+    .populate('residents')
     .orFail(() => {
       throw new NotFoundError('Requested resource not found');
     })

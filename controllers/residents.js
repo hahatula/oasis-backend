@@ -3,17 +3,16 @@ const User = require('../models/user');
 const BadRequestError = require('../utils/errors/BadRequestError');
 
 module.exports.getResidents = (req, res, next) => {
-// Extract residentIds from query, which can be a single ID or an array
-let { id: residentIds } = req.query;
-if (!residentIds) {
-  return next(new BadRequestError('No resident IDs were provided'));
-}
+  // Extract residentIds from query, which can be a single ID or an array
+  let { id: residentIds } = req.query;
+  if (!residentIds) {
+    return next(new BadRequestError('No resident IDs were provided'));
+  }
 
-// If a single ID is passed, convert it to an array
-if (!Array.isArray(residentIds)) {
-  residentIds = [residentIds];
-}
-
+  // If a single ID is passed, convert it to an array
+  if (!Array.isArray(residentIds)) {
+    residentIds = [residentIds];
+  }
 
   Resident.find({ _id: { $in: residentIds } })
     .then((residents) => {
@@ -34,7 +33,11 @@ module.exports.createResident = (req, res, next) => {
     .then((resident) => {
       User.findByIdAndUpdate(
         host,
-        { $push: { residents: resident._id } },
+        {
+          $push: {
+            residents: resident,
+          },
+        },
         { new: true }
       ).then(() =>
         res.status(201).send({

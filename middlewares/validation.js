@@ -13,24 +13,14 @@ module.exports.validatePostBody = celebrate({
     text: Joi.string().max(2000).messages({
       'string.max': 'The maximum length of the "text" field is 2000',
     }),
-    imageUrl: Joi.string().custom(validateURL).required().messages({
+    photoUrl: Joi.string().custom(validateURL).required().messages({
       'string.empty': 'The "imageUrl" field must be filled in',
       'string.uri': 'The "imageUrl" field must be a valid url',
     }),
-    authors: Joi.object()
-      .keys({
-        host: Joi.required().messages({
-          'any.required': 'The "host" field is required',
-        }),
-        resident: Joi.required().messages({
-          'any.required': 'The "resident" field is required',
-        }),
-      })
-      .required()
-      .messages({
-        'object.base': 'The "authors" field must be an object',
-        'any.required': 'The "authors" field is required',
-      }),
+    residentId: Joi.string().hex().length(24).required().messages({
+      'string.length': 'The "residentId" must be a valid MongoDB ObjectId',
+      'any.required': 'The "resident" field is required',
+    }),
   }),
 });
 

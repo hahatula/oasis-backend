@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema({
     type: String,
     maxlength: 2000,
   },
-  imageUrl: {
+  photoUrl: {
     type: String,
     required: true,
     validate: {

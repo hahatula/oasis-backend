@@ -28,7 +28,8 @@ module.exports.getResidents = (req, res, next) => {
 };
 
 module.exports.createResident = (req, res, next) => {
-  const { name, avatar, species, bio, bday, host = req.user._id } = req.body;
+  const { name, avatar, species, bio, bday } = req.body;
+  const host = req.user._id;
   Resident.create({ name, avatar, species, bio, bday, host })
     .then((resident) => {
       User.findByIdAndUpdate(

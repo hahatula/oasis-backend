@@ -4,8 +4,8 @@ const {
   createPost,
   updatePost,
   deletePost,
-//   likePost,
-//   dislikePost,
+  likePost,
+  dislikePost,
 } = require('../controllers/posts');
 const {
   validatePostBody,
@@ -18,7 +18,7 @@ router.get('/', getPosts);
 router.post('/', validatePostBody, createPost);
 router.patch('/:itemId', validateId, validatePostUpdate, updatePost);
 router.delete('/:itemId', validateId, deletePost);
-// router.put('/:itemId/likes', validateId, likePost);
-// router.delete('/:itemId/likes', validateId, dislikePost);
+router.put('/:itemId/likes', validateId, likePost);
+router.delete('/:itemId/likes', validateId, dislikePost);
 
 module.exports = router;

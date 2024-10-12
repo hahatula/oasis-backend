@@ -50,15 +50,15 @@ module.exports.createPost = (req, res, next) => {
         ),
       ]).then(() => post); // need this as we send updated authors within post data
     })
-    .then((post) =>
-      res.status(201).send({
-        text: post.text,
-        photoUrl: post.photoUrl,
-        authors: post.authors,
-        likes: post.likes,
-        createdAt: post.createdAt,
+    .then((post) => {
+        return Post.findById(post._id)
+          .populate({
+            path: 'authors',
+            populate: ['host', 'resident'],
+          })
+          .populate('likes');
       })
-    )
+    .then((post) => res.status(201).send(post))
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
@@ -78,12 +78,13 @@ module.exports.updatePost = (req, res, next) => {
     })
     .then((post) => {
       if (post.authors.host.equals(req.user._id)) {
-        post.update({ text }, { new: true }).then((post) => {
-          res.send(post);
-        });
+        return Post.findByIdAndUpdate(itemId, { text }, { new: true });
       } else {
         throw new ForbiddenError('No permission');
       }
+    })
+    .then((post) => {
+      res.send(post);
     })
     .catch((err) => {
       console.error(err);
@@ -138,3 +139,55 @@ module.exports.deletePost = (req, res, next) => {
       return next(err);
     });
 };
+
+module.exports.likePost = (req, res, next) =>
+  Post.findByIdAndUpdate(
+    req.params.itemId,
+    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+    { new: true }
+  )
+    .orFail(() => {
+      throw new NotFoundError('Requested resource not found');
+    })
+    .then((post) => {
+        return Post.findById(post._id)
+          .populate({
+            path: 'authors',
+            populate: ['host', 'resident'],
+          })
+        //   .populate('likes');
+      })
+    .then((post) => res.send(post))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === 'CastError') {
+        return next(new BadRequestError('Invalid data'));
+      }
+      return next(err);
+    });
+
+module.exports.dislikePost = (req, res, next) =>
+  Post.findByIdAndUpdate(
+    req.params.itemId,
+    { $pull: { likes: req.user._id } }, // remove _id from the array
+    { new: true }
+  )
+    .orFail(() => {
+      throw new NotFoundError('Requested resource not found');
+    })
+    .then((post) => {
+        return Post.findById(post._id)
+          .populate({
+            path: 'authors',
+            populate: ['host', 'resident'],
+          })
+          .populate('likes');
+      })
+    .then((post) => res.send(post))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === 'CastError') {
+        return next(new BadRequestError('Invalid data'));
+      }
+      return next(err);
+    });

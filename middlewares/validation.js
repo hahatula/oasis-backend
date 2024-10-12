@@ -28,11 +28,7 @@ module.exports.validatePostUpdate = celebrate({
   body: Joi.object().keys({
     text: Joi.string().max(2000).messages({
       'string.max': 'The maximum length of the "text" field is 2000',
-    }),
-    imageUrl: Joi.string().custom(validateURL).required().messages({
-      'string.empty': 'The "imageUrl" field must be filled in',
-      'string.uri': 'The "imageUrl" field must be a valid url',
-    }),
+    })
   }),
 });
 

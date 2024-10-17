@@ -1,4 +1,4 @@
-const { SERVER_ERROR_STATUS_CODE } = require("../utils/errors/errors");
+const { SERVER_ERROR_STATUS_CODE } = require('../utils/errors/errors');
 
 module.exports = (err, req, res, next) => {
   console.error(err);
@@ -7,7 +7,7 @@ module.exports = (err, req, res, next) => {
     // check the status and display a message based on it
     message:
       statusCode === SERVER_ERROR_STATUS_CODE
-        ? "An error occurred on the server"
+        ? 'An error occurred on the server'
         : message,
   });
 };

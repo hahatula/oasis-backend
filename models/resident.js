@@ -50,7 +50,7 @@ const residentSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('resident', residentSchema);

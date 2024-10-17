@@ -64,32 +64,32 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(
-    email,
-    password
-  ) {
-    const errNotMatched = new Error("Incorrect email or password");
-    errNotMatched.name = "NotCorrectCredentials";
-    const errNotEnough = new Error("Email or password is missing");
-    errNotEnough.name = "NoEmailOrPassword";
-    console.log(email, password);
-  
-    if (!email || !password) {
-      return Promise.reject(errNotEnough);
-    }
-    return this.findOne({ email })
-      .select("+password")
-      .then((user) => {
-        if (!user) {
+  email,
+  password
+) {
+  const errNotMatched = new Error('Incorrect email or password');
+  errNotMatched.name = 'NotCorrectCredentials';
+  const errNotEnough = new Error('Email or password is missing');
+  errNotEnough.name = 'NoEmailOrPassword';
+  console.log(email, password);
+
+  if (!email || !password) {
+    return Promise.reject(errNotEnough);
+  }
+  return this.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(errNotMatched);
+      }
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
           return Promise.reject(errNotMatched);
         }
-        return bcrypt.compare(password, user.password).then((matched) => {
-          if (!matched) {
-            return Promise.reject(errNotMatched);
-          }
-  
-          return user;
-        });
+
+        return user;
       });
-  };
+    });
+};
 
 module.exports = mongoose.model('user', userSchema);

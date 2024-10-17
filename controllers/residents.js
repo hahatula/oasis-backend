@@ -14,7 +14,7 @@ module.exports.getResidents = (req, res, next) => {
     residentIds = [residentIds];
   }
 
-  Resident.find({ _id: { $in: residentIds } })
+  return Resident.find({ _id: { $in: residentIds } })
     .then((residents) => {
       if (residents.length === 0) {
         throw new BadRequestError('No residents found with the provided IDs');
@@ -60,4 +60,7 @@ module.exports.createResident = (req, res, next) => {
     });
 };
 
-module.exports.updateResident = (req, res, next) => {};
+module.exports.updateResident = (req, res, next) => {
+  // TODO: Implement updateResident function
+  console.log(req, res);
+};

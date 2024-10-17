@@ -28,7 +28,7 @@ module.exports.validatePostUpdate = celebrate({
   body: Joi.object().keys({
     text: Joi.string().max(2000).messages({
       'string.max': 'The maximum length of the "text" field is 2000',
-    })
+    }),
   }),
 });
 

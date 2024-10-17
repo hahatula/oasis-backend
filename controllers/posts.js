@@ -155,7 +155,7 @@ module.exports.likePost = (req, res, next) =>
             path: 'authors',
             populate: ['host', 'resident'],
           })
-        //   .populate('likes');
+           .populate('likes');
       })
     .then((post) => res.send(post))
     .catch((err) => {

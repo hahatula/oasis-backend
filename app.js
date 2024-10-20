@@ -12,7 +12,7 @@ require('dotenv').config();
 const { MONGO_URI } = process.env;
 mongoose.connect(MONGO_URI);
 // change port to 3001 to run locally
-// change port to 3000 for deploy
+// change port to 3000 for deploy to vercel
 const { PORT = 3001 } = process.env;
 const app = express();
 

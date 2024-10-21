@@ -1,6 +1,7 @@
 const Resident = require('../models/resident');
 const User = require('../models/user');
 const BadRequestError = require('../utils/errors/BadRequestError');
+const { ERROR_MESSAGES } = require('../utils/errors/errors');
 
 module.exports.getResidents = (req, res, next) => {
   // Extract residentIds from query, which can be a single ID or an array
@@ -54,13 +55,13 @@ module.exports.createResident = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
 };
 
 module.exports.updateResident = (req, res, next) => {
-  // TODO: Implement updateResident function
+  // TODO: Implement updateResident function (It is my personal plan for future. For now the app gives an opportunity to update users and posts only)
   console.log(req, res);
 };

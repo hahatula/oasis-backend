@@ -7,13 +7,10 @@ const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/limiter');
-require('dotenv').config();
+const { MONGO_URI, PORT } = require('./config');
 
-const { MONGO_URI } = process.env;
 mongoose.connect(MONGO_URI);
-// change port to 3001 to run locally
-// change port to 3000 for deploy to vercel
-const { PORT = 3001 } = process.env;
+
 const app = express();
 
 app.use(helmet());

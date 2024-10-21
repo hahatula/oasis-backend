@@ -5,8 +5,8 @@ const BadRequestError = require('../utils/errors/BadRequestError');
 const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ConflictError = require('../utils/errors/ConflictError');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../config');
+const { ERROR_MESSAGES } = require('../utils/errors/errors');
 
 module.exports.getHostInfo = (req, res, next) => {
   const { id: hostId } = req.query;
@@ -38,7 +38,7 @@ module.exports.createUser = (req, res, next) => {
         return next(new ConflictError('The user already exists.'));
       }
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -49,13 +49,9 @@ module.exports.login = (req, res, next) => {
 
   User.findUserByCredentials(email, password) // method from user schema
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        {
-          expiresIn: '7d',
-        }
-      );
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
       return res.send({ token });
     })
     .catch((err) => {
@@ -76,13 +72,13 @@ module.exports.getCurrentUser = (req, res, next) => {
   User.findById(_id)
     .populate('residents')
     .orFail(() => {
-      throw new NotFoundError('Requested resource not found');
+      throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND);
     })
     .then((user) => res.send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
-        return next(new 'Invalid data'());
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -105,7 +101,7 @@ module.exports.updateProfile = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -128,7 +124,7 @@ module.exports.updateAvatar = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });

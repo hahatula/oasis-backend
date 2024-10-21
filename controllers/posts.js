@@ -4,6 +4,7 @@ const User = require('../models/user');
 const BadRequestError = require('../utils/errors/BadRequestError');
 const ForbiddenError = require('../utils/errors/ForbiddenError');
 const NotFoundError = require('../utils/errors/NotFoundError');
+const {ERROR_MESSAGES} = require('../utils/errors/errors')
 
 module.exports.getPosts = (req, res, next) => {
   Post.find({})
@@ -64,7 +65,7 @@ module.exports.createPost = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -76,13 +77,13 @@ module.exports.updatePost = (req, res, next) => {
 
   Post.findById(itemId)
     .orFail(() => {
-      throw new NotFoundError('Requested resource not found');
+      throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND);
     })
     .then((post) => {
       if (post.authors.host.equals(req.user._id)) {
         return Post.findByIdAndUpdate(itemId, { text }, { new: true });
       }
-      throw new ForbiddenError('No permission');
+      throw new ForbiddenError(ERROR_MESSAGES.FORBIDDEN);
     })
     .then((post) => {
       res.send(post);
@@ -90,7 +91,7 @@ module.exports.updatePost = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -101,7 +102,7 @@ module.exports.deletePost = (req, res, next) => {
 
   Post.findById(itemId)
     .orFail(() => {
-      throw new NotFoundError('Requested resource not found');
+      throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND);
     })
     .then((post) => {
       if (post.authors.host.equals(req.user._id)) {
@@ -122,7 +123,7 @@ module.exports.deletePost = (req, res, next) => {
           ),
         ]).then(() => post);
       }
-      throw new ForbiddenError('No permission');
+      throw new ForbiddenError(ERROR_MESSAGES.FORBIDDEN);
     })
     .then((post) =>
       post
@@ -132,7 +133,7 @@ module.exports.deletePost = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -145,7 +146,7 @@ module.exports.likePost = (req, res, next) =>
     { new: true }
   )
     .orFail(() => {
-      throw new NotFoundError('Requested resource not found');
+      throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND);
     })
     .then((post) =>
       Post.findById(post._id)
@@ -159,7 +160,7 @@ module.exports.likePost = (req, res, next) =>
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });
@@ -171,7 +172,7 @@ module.exports.dislikePost = (req, res, next) =>
     { new: true }
   )
     .orFail(() => {
-      throw new NotFoundError('Requested resource not found');
+      throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND);
     })
     .then((post) =>
       Post.findById(post._id)
@@ -185,7 +186,7 @@ module.exports.dislikePost = (req, res, next) =>
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError(ERROR_MESSAGES.INVALID_DATA));
       }
       return next(err);
     });

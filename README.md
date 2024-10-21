@@ -1,7 +1,8 @@
 # 🌿 Oasis
 An app for plant-lovers. Speak for your plants, share your gardening experiences, tips, and plant care routines.
 
-#### Link: https://oasis.gatesweb.info/
+#### App Link: https://oasis.gatesweb.info/
+#### Server Link: https://api.oasis.gatesweb.info/
 
 ## 🚀 Built With
 Node.js - A JavaScript runtime built on Chrome's V8 JavaScript engine, allowing the backend to handle server-side logic.

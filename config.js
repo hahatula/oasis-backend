@@ -5,7 +5,7 @@ const {
   JWT_SECRET = NODE_ENV === 'production'
     ? process.env.JWT_SECRET
     : 'dev-secret',
-  PORT = 3001,
+  PORT = 3000,
   MONGO_URI = 'mongodb://localhost:27017/oasis',
 } = process.env;
 
